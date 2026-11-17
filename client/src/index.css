@@ -1,0 +1,76 @@
+/* Styling reused from my CTIS club website: near-black background with gold accents */
+
+/* Background and entirety website styling */
+body {
+  margin: 0;
+  background-color: #111;
+  color: white;
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+}
+
+/* Header styling */
+header {
+  background-color: white;
+  padding: 1rem 28px;
+}
+
+header a {
+  color: #9f8307;
+  text-decoration: none;
+  margin-right: 15px;
+}
+
+/* Home section with a gold line on the left */
+.home {
+  padding: 30px 28px;
+  margin: 20px;
+  border-left: 3px solid #9f8307;
+}
+
+/* Gold button */
+.button {
+  display: inline-block;
+  background-color: #9f8307;
+  color: white;
+  padding: 10px 18px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+/* Grid of club cards that wraps on smaller screens */
+.club_grid {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding: 0 28px;
+}
+
+/* Each club's card */
+.club_card {
+  background-color: #222;
+  padding: 15px 20px;
+  flex: 1;
+  min-width: 220px;
+}
+
+.club_card h3 {
+  color: #9f8307;
+  margin-top: 0;
+}
+
+/* Footer styling */
+footer {
+  background-color: white;
+  color: #111;
+  text-align: center;
+  padding: 1rem;
+  margin-top: 30px;
+}
+
+/* Stack the cards in one column on phones */
+@media (max-width: 600px) {
+  .club_grid {
+    flex-direction: column;
+  }
+}
