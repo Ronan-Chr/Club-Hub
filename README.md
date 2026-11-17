@@ -12,7 +12,7 @@ This project is used to build upon my experience in college and the issues I fac
 - **Create a club (CH4):** any logged-in student can create a club with a name and description. The creator automatically becomes the club's owner and the club shows up in the directory. Im still considering reframing how this works because of official SGA paperwork I dont want not legally established student organizations on a platform meant for the school.
 - **Data:** PostgreSQL stores `users`, `clubs` and `memberships`. `memberships` uses a composite primary key (user + club), so the database itself stops someone from joining the same club twice. Roles (`owner`, `officer`, `member`) are already in the table for Sprint 2 permissions. The clubs will also be able to link multiple clubs to individual users.
 - **Errors:** every error from the API comes back as `{ "error": "message" }` with the matching status code (400, 401, 404, 409, 500), and the React app shows that message to the user. Reflecting what the actual error was weither its syntax errors a runtime error or a failed fetch of information.
-- **Tests:** `npm test` runs 34 backend tests and `npm --prefix client test` runs 7 frontend tests. That will be eventually made into a workflow in Github Actions to automate bug testing before pushes to prod.
+- **Tests:** `npm test` runs the Jest tests for the back end. That will be eventually made into a workflow in Github Actions to automate bug testing before pushes to prod.
 
 ## Tech Stack
 
@@ -52,7 +52,7 @@ Then open:
 http://localhost:3000
 ```
 
-Without a database set up the app uses a temporary in-memory store, so accounts and clubs reset when the server restarts. To use PostgreSQL, copy `.env.example` to `.env` and put your database URL in `DATABASE_URL`.
+You also need a PostgreSQL database. Copy `.env.example` to `.env`, put your database URL in `DATABASE_URL`, then run `server/src/db/schema.sql` once to create the tables.
 
 ## How to Use
 
@@ -64,21 +64,21 @@ Without a database set up the app uses a temporary in-memory store, so accounts 
 ## Publish With Render
 
 1. Push the code to the `main` branch on GitHub.
-2. In Render, click `New` -> `Blueprint` and pick this repository.
-3. Render reads `render.yaml` and creates the web service and the PostgreSQL database.
-4. Click `Apply` and wait for the first deploy to finish, then open the Render URL.
+2. In Render, click `New` -> `PostgreSQL` to create the database and copy its URL.
+3. Click `New` -> `Web Service`, pick this repository, set the build command to `npm install && npm run build` and the start command to `npm start`.
+4. Add `DATABASE_URL` and `JWT_SECRET` under `Environment`, then deploy and open the Render URL.
 5. Every merge into `main` redeploys the site automatically.
 
 ## Architecture
 
-The back end is split into layers so the user interface, business logic and data are kept separate: routes -> controllers -> services -> repositories -> PostgreSQL, with React as the front end.
+The app uses the **MVC** (Model-View-Controller) pattern so the data, the logic and the user interface are kept separate: React page -> `routes.js` -> controller -> model -> PostgreSQL.
 
-- **MVC:** the database tables and repositories are the models, the React pages are the views and the Express controllers are the controllers.
-- **Repository:** all the SQL lives in `server/src/repositories`, so nothing else talks to the database directly.
-- **Factory:** `repositories/factory.js` uses PostgreSQL when `DATABASE_URL` is set and an in-memory store when it isn't, which lets the tests run without a database.
-- **Observer:** React's `AuthContext` updates every page automatically when someone logs in or out.
+- **Models** (`server/src/models/`): `userModel.js` and `clubModel.js` hold all the SQL, so nothing else talks to the database directly.
+- **Views** (`client/src/pages/`): the React pages `Login`, `Directory`, `ClubPage` and `CreateClub`. They call the API through `api.js` (Axios).
+- **Controllers** (`server/src/controllers/`): `authController.js` and `clubController.js` check the input, call the models and send back the response.
+- **Middleware** (`server/src/middleware/auth.js`): checks the JWT login token before protected routes like joining or creating a club.
 
-I picked raw SQL with `pg` over an ORM because I'm more comfortable with SQL, and one Render service serves both the API and the React app so there's only one URL. More detail is in `docs/ARCHITECTURE.md`.
+I picked raw SQL with `pg` over an ORM because I'm more comfortable with SQL, and one Render service serves both the API and the React app so there's only one URL.
 
 ### Database
 
@@ -96,10 +96,9 @@ Run the tests with:
 
 ```bash
 npm test
-npm --prefix client test
 ```
 
-The back end has 34 Jest + Supertest tests and the front end has 7 Vitest tests. They cover both success and failure cases like signing up, duplicate emails, wrong passwords, creating clubs, joining twice, leaving and protected routes without a login.
+The tests in `server/tests/` use Jest + Supertest. They cover both success and failure cases like signing up, duplicate emails, wrong passwords, creating clubs, joining twice, leaving and protected routes without a login.
 
 ## Screens
 
@@ -133,7 +132,7 @@ The main focus is to have a set view for the Webpage view on Desktop and then mo
 
 - **`Cannot find module`:** run `npm install`, then `npm run build`.
 - **Blank page:** the React app isn't built yet, run `npm run build`.
-- **`ECONNREFUSED 127.0.0.1:5432`:** PostgreSQL isn't running. Start it, or leave `DATABASE_URL` empty to use the in-memory store.
+- **`ECONNREFUSED 127.0.0.1:5432`:** PostgreSQL isn't running or `DATABASE_URL` in `.env` is wrong.
 - **Port 3000 already in use:** set `PORT=3001` in `.env`.
 - **"Session expired":** log out and log back in.
 
