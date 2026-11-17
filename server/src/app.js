@@ -1,6 +1,8 @@
 // Starts the Express server.
 // Routes for sign up / log in get added here in the next steps.
 require('dotenv').config();
+const fs = require('fs');
+const path = require('path');
 const express = require('express');
 const pool = require('./db/pool');
 
@@ -20,7 +22,18 @@ app.get('/api/health', async (req, res) => {
 // Only start listening when this file is run directly (tests import app instead)
 if (require.main === module) {
   const PORT = process.env.PORT || 3000;
-  app.listen(PORT, () => console.log(`Club Hub server running on http://localhost:${PORT}`));
+
+  // Create the tables from schema.sql first (IF NOT EXISTS means it's safe to run every time)
+  const schema = fs.readFileSync(path.join(__dirname, 'db', 'schema.sql'), 'utf8');
+  pool.query(schema)
+    .then(() => {
+      console.log('Database tables are ready');
+      app.listen(PORT, () => console.log(`Club Hub server running on http://localhost:${PORT}`));
+    })
+    .catch((err) => {
+      console.error('Could not set up the database:', err.message);
+      process.exit(1);
+    });
 }
 
 module.exports = app;
