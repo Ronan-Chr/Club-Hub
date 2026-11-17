@@ -5,6 +5,18 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const userModel = require('../models/userModel');
 
+// Limits that match the users table (bcrypt only uses the first 72 characters of a password)
+const MAX_NAME = 100;
+const MAX_EMAIL = 254;
+const MIN_PASSWORD = 8;
+const MAX_PASSWORD = 72;
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+// Read a field from the request body as text (protects against numbers, objects, etc.)
+function text(value) {
+  return typeof value === 'string' ? value : '';
+}
+
 // Make a login token that says "this is user #id" and expires in 7 days
 function makeToken(userId) {
   return jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: '7d' });
@@ -12,19 +24,22 @@ function makeToken(userId) {
 
 // POST /api/auth/signup
 async function signup(req, res) {
-  const name = (req.body.name || '').trim();
-  const email = (req.body.email || '').trim().toLowerCase();
-  const password = req.body.password || '';
+  const name = text(req.body.name).trim();
+  const email = text(req.body.email).trim().toLowerCase();
+  const password = text(req.body.password);
 
   // Input checks (error handling for bad input)
   if (!name || !email || !password) {
     return res.status(400).json({ error: 'Name, email and password are all required.' });
   }
-  if (!email.includes('@')) {
+  if (name.length > MAX_NAME) {
+    return res.status(400).json({ error: `Name must be ${MAX_NAME} characters or fewer.` });
+  }
+  if (email.length > MAX_EMAIL || !EMAIL_PATTERN.test(email)) {
     return res.status(400).json({ error: 'Please enter a valid email.' });
   }
-  if (password.length < 8) {
-    return res.status(400).json({ error: 'Password must be at least 8 characters.' });
+  if (password.length < MIN_PASSWORD || password.length > MAX_PASSWORD) {
+    return res.status(400).json({ error: `Password must be ${MIN_PASSWORD} to ${MAX_PASSWORD} characters.` });
   }
 
   // CH1 acceptance criteria: signing up with an email that already has an account shows an error
@@ -42,8 +57,8 @@ async function signup(req, res) {
 
 // POST /api/auth/login
 async function login(req, res) {
-  const email = (req.body.email || '').trim().toLowerCase();
-  const password = req.body.password || '';
+  const email = text(req.body.email).trim().toLowerCase();
+  const password = text(req.body.password);
 
   if (!email || !password) {
     return res.status(400).json({ error: 'Email and password are required.' });
