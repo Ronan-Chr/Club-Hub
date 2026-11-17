@@ -68,6 +68,46 @@ footer {
   margin-top: 30px;
 }
 
+/* Name shown in the nav bar when logged in */
+.nav_user {
+  color: #111;
+  margin-right: 15px;
+}
+
+/* Sign up / log in form */
+.auth_form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 360px;
+}
+
+.auth_form input {
+  padding: 10px;
+  border: 1px solid #9f8307;
+  background-color: #222;
+  color: white;
+  font-size: 1rem;
+}
+
+.auth_form button {
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  align-self: flex-start;
+}
+
+/* Error message (wrong password, duplicate email, etc.) */
+.error {
+  color: #ff6b6b;
+  margin: 0;
+}
+
+/* "Sign up" / "Log in" switch link */
+.switch_link {
+  color: #9f8307;
+}
+
 /* Stack the cards in one column on phones */
 @media (max-width: 600px) {
   .club_grid {
