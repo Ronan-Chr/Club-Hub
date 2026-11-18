@@ -116,6 +116,47 @@ footer {
   color: #9f8307;
 }
 
+/* Directory search box */
+.search {
+  margin-top: 10px;
+  padding: 10px;
+  width: 100%;
+  max-width: 360px;
+  border: 1px solid #9f8307;
+  background-color: #222;
+  color: white;
+  font-size: 1rem;
+}
+
+/* Club cards you can click to open */
+.clickable {
+  cursor: pointer;
+}
+
+.clickable:hover {
+  outline: 1px solid #9f8307;
+}
+
+.member_count {
+  color: #aaa;
+  margin-bottom: 0;
+}
+
+/* Loading / empty / error messages under the directory header */
+.page_message {
+  padding: 0 28px;
+}
+
+/* Member list on a club page */
+.member_list {
+  padding-left: 20px;
+}
+
+.role {
+  color: #9f8307;
+  font-size: 0.9rem;
+}
+
 /* Stack the cards in one column on phones */
 @media (max-width: 600px) {
   .club_grid {
