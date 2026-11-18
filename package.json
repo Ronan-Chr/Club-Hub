@@ -3,7 +3,22 @@
   "version": "0.1.0",
   "description": "Club Hub - a communication hub for college clubs (Sprint 1 MVP)",
   "private": true,
+  "main": "server/src/app.js",
   "scripts": {
-    "dev:client": "npm --prefix client run dev"
+    "start": "node server/src/app.js",
+    "dev": "node --watch server/src/app.js",
+    "dev:client": "npm --prefix client run dev",
+    "test": "jest --runInBand"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.13.1"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^7.0.0"
   }
 }
