@@ -7,6 +7,7 @@ function NavBar({ user, onNavigate, onLogout }) {
         <a href="#" onClick={() => onNavigate('home')}>Directory</a>
         {user ? (
           <>
+            <a href="#" onClick={() => onNavigate('create')}>Create Club</a>
             <span className="nav_user">Hi, {user.name}</span>
             <a href="#" onClick={onLogout}>Log Out</a>
           </>
