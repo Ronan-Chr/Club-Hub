@@ -157,6 +157,23 @@ footer {
   font-size: 0.9rem;
 }
 
+/* CH3: Join / Leave button and the "Joined" tag */
+.join_button {
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-bottom: 10px;
+}
+
+.joined {
+  margin-left: 10px;
+  padding: 2px 8px;
+  background-color: #9f8307;
+  color: white;
+  font-size: 0.75rem;
+  vertical-align: middle;
+}
+
 /* Stack the cards in one column on phones */
 @media (max-width: 600px) {
   .club_grid {
