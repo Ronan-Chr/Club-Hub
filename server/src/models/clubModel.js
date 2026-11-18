@@ -57,4 +57,33 @@ async function getClub(id) {
   return { ...club, members: membersResult.rows };
 }
 
-module.exports = { createClubWithOwner, listClubs, getClub };
+// CH3: join a club as a regular member.
+// The (user_id, club_id) primary key stops someone joining the same club twice.
+async function joinClub(userId, clubId) {
+  await pool.query(
+    "INSERT INTO memberships (user_id, club_id, role) VALUES ($1, $2, 'member')",
+    [userId, clubId]
+  );
+}
+
+// CH3: leave a club
+async function leaveClub(userId, clubId) {
+  await pool.query('DELETE FROM memberships WHERE user_id = $1 AND club_id = $2', [userId, clubId]);
+}
+
+// CH3: the user's role in a club ('owner', 'officer', 'member'), or undefined if they aren't in it
+async function getRole(userId, clubId) {
+  const result = await pool.query(
+    'SELECT role FROM memberships WHERE user_id = $1 AND club_id = $2',
+    [userId, clubId]
+  );
+  return result.rows[0]?.role;
+}
+
+// CH3: ids of every club the user is in, so the directory can mark them as joined
+async function listMyClubIds(userId) {
+  const result = await pool.query('SELECT club_id FROM memberships WHERE user_id = $1', [userId]);
+  return result.rows.map((row) => row.club_id);
+}
+
+module.exports = { createClubWithOwner, listClubs, getClub, joinClub, leaveClub, getRole, listMyClubIds };

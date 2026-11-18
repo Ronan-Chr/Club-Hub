@@ -1,9 +1,11 @@
-// Club directory for CH2: every club from the database, with a search box.
+// Club directory for CH2 and CH3: every club from the database, with a search box.
+// Clubs you've joined get a "Joined" tag.
 import { useEffect, useState } from 'react';
 import api, { getErrorMessage } from '../api';
 
-function Directory({ onOpenClub }) {
+function Directory({ user, onOpenClub }) {
   const [clubs, setClubs] = useState([]);
+  const [myClubIds, setMyClubIds] = useState([]);
   const [search, setSearch] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
@@ -15,6 +17,15 @@ function Directory({ onOpenClub }) {
       .catch((err) => setError(getErrorMessage(err)))
       .finally(() => setLoading(false));
   }, []);
+
+  // CH3: if logged in, find out which clubs I'm already in
+  useEffect(() => {
+    if (user) {
+      api.get('/me/clubs').then((response) => setMyClubIds(response.data.clubIds));
+    } else {
+      setMyClubIds([]);
+    }
+  }, [user]);
 
   // Only show clubs whose name or description matches the search
   const term = search.trim().toLowerCase();
@@ -44,7 +55,10 @@ function Directory({ onOpenClub }) {
       <section className="club_grid">
         {shownClubs.map((club) => (
           <article className="club_card clickable" key={club.id} onClick={() => onOpenClub(club.id)}>
-            <h3>{club.name}</h3>
+            <h3>
+              {club.name}
+              {myClubIds.includes(club.id) && <span className="joined">Joined</span>}
+            </h3>
             <p>{club.description}</p>
             <p className="member_count">
               {club.member_count} {club.member_count === 1 ? 'member' : 'members'}

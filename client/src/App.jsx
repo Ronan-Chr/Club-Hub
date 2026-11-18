@@ -46,9 +46,11 @@ function App() {
 
         {page === 'create' && user && <CreateClub />}
 
-        {page === 'club' && <ClubPage clubId={openClubId} onBack={() => setPage('home')} />}
+        {page === 'club' && (
+          <ClubPage clubId={openClubId} user={user} onBack={() => setPage('home')} onLogin={() => setPage('login')} />
+        )}
 
-        {page === 'home' && <Directory onOpenClub={openClub} />}
+        {page === 'home' && <Directory user={user} onOpenClub={openClub} />}
       </main>
 
       <footer>
