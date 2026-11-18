@@ -32,12 +32,6 @@ Front End- React (Vite), React Router and Axios<br>
 </tr>
 </table>
 
-## Live Demo
-
-Link- DEPLOYED_URL_HERE
-
-*(I have a free tiered Render account which says if not very active a URL can take up to 3-5 minutes to load so just be aware.)*
-
 ## Run Locally
 
 You need Node.js 18 or newer. Install everything, build the React front end, then start the server:
