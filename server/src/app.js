@@ -24,6 +24,11 @@ app.get('/api/health', async (req, res) => {
 // All the Club Hub API routes live under /api (see routes.js)
 app.use('/api', routes);
 
+// In production one server does everything: it also sends the built React app (client/dist)
+const clientDist = path.join(__dirname, '..', '..', 'client', 'dist');
+app.use(express.static(clientDist));
+app.get(/^\/(?!api).*/, (req, res) => res.sendFile(path.join(clientDist, 'index.html')));
+
 // Error handler: if anything unexpected breaks, send a simple message instead of crashing
 app.use((err, req, res, next) => {
   if (err.type === 'entity.parse.failed') {
