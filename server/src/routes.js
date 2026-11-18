@@ -1,6 +1,7 @@
 // All the API routes in one place. Each URL points to a controller function.
 const express = require('express');
 const authController = require('./controllers/authController');
+const clubController = require('./controllers/clubController');
 const { requireAuth } = require('./middleware/auth');
 
 const router = express.Router();
@@ -12,5 +13,8 @@ const wrap = (fn) => (req, res, next) => fn(req, res, next).catch(next);
 router.post('/auth/signup', wrap(authController.signup));
 router.post('/auth/login', wrap(authController.login));
 router.get('/auth/me', requireAuth, wrap(authController.me));
+
+// CH4: clubs
+router.post('/clubs', requireAuth, wrap(clubController.create));
 
 module.exports = router;
