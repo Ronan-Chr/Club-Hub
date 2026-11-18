@@ -8,6 +8,7 @@
     "start": "node server/src/app.js",
     "dev": "node --watch server/src/app.js",
     "dev:client": "npm --prefix client run dev",
+    "build": "npm install --prefix client --include=dev && npm --prefix client run build",
     "test": "jest --runInBand"
   },
   "dependencies": {
