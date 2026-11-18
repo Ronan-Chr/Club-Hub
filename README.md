@@ -5,6 +5,8 @@ Club Hub is an all-in-one communication hub for college clubs. Each club gets it
 # Why Use It
 This project is used to build upon my experience in college and the issues I faced. The term "Networking" is thrown around constantly in all college programs but making friends and connections are two different things finding people interested in the same thing as you is hard nowadays this fixes that. The Club-Hub platform is going to help you connect with Career relevant groups and help grow your professional network locally.
 
+## Deployed Link: https://club-hub-jbam.onrender.com/#
+
 ## How it works
 - **Accounts (CH1):** students sign up with a name, email and password. Passwords are hashed with bcrypt before they're stored, and logging in returns a JWT (login token) that the React app sends with every request. Signing up with an email that already exists, or logging in with the wrong info, shows an error message. This is to insure no vulnerabilities for specific user information throughout the platform with logged in users.
 - **Club directory (CH2):** the home page lists every club with its name and short description, plus a search box. Clicking a club opens its page with the description and member list. This is to give students the ability for a remote club fair for people who couldnt attend the one their campus held or someone who might be socially anxious in group enviornments like that.
