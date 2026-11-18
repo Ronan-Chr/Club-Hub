@@ -9,6 +9,13 @@ body {
   line-height: 1.6;
 }
 
+/* footer sits at the bottom */
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
 /* Header styling */
 header {
   background-color: white;
@@ -65,7 +72,7 @@ footer {
   color: #111;
   text-align: center;
   padding: 1rem;
-  margin-top: 30px;
+  margin-top: auto;
 }
 
 /* Name shown in the nav bar when logged in */
