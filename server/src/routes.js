@@ -19,4 +19,9 @@ router.get('/clubs', wrap(clubController.list));
 router.get('/clubs/:id', wrap(clubController.get));
 router.post('/clubs', requireAuth, wrap(clubController.create));
 
+// CH3: join and leave
+router.post('/clubs/:id/join', requireAuth, wrap(clubController.join));
+router.post('/clubs/:id/leave', requireAuth, wrap(clubController.leave));
+router.get('/me/clubs', requireAuth, wrap(clubController.myClubs));
+
 module.exports = router;

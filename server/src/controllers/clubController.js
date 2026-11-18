@@ -9,6 +9,12 @@ function text(value) {
   return typeof value === 'string' ? value : '';
 }
 
+// Turn the :id in the URL into a club id, or null if it isn't a positive whole number
+function clubIdFrom(req) {
+  const id = Number(req.params.id);
+  return Number.isInteger(id) && id > 0 ? id : null;
+}
+
 // POST /api/clubs  (CH4: create a club, needs a login token)
 async function create(req, res) {
   const name = text(req.body.name).trim();
@@ -40,8 +46,8 @@ async function list(req, res) {
 
 // GET /api/clubs/:id  (CH2: one club's page with its members)
 async function get(req, res) {
-  const id = Number(req.params.id);
-  if (!Number.isInteger(id) || id < 1) {
+  const id = clubIdFrom(req);
+  if (!id) {
     return res.status(400).json({ error: 'That is not a valid club id.' });
   }
 
@@ -52,4 +58,50 @@ async function get(req, res) {
   res.json({ club });
 }
 
-module.exports = { create, list, get };
+// POST /api/clubs/:id/join  (CH3: join a club, needs a login token)
+async function join(req, res) {
+  const id = clubIdFrom(req);
+  if (!id) {
+    return res.status(400).json({ error: 'That is not a valid club id.' });
+  }
+
+  try {
+    await clubModel.joinClub(req.userId, id);
+    res.status(201).json({ message: 'You joined the club.' });
+  } catch (err) {
+    if (err.code === '23505') {
+      return res.status(409).json({ error: 'You are already in this club.' });
+    }
+    if (err.code === '23503') { // the club id doesn't exist
+      return res.status(404).json({ error: 'Club not found.' });
+    }
+    throw err;
+  }
+}
+
+// POST /api/clubs/:id/leave  (CH3: leave a club, needs a login token)
+async function leave(req, res) {
+  const id = clubIdFrom(req);
+  if (!id) {
+    return res.status(400).json({ error: 'That is not a valid club id.' });
+  }
+
+  const role = await clubModel.getRole(req.userId, id);
+  if (!role) {
+    return res.status(404).json({ error: 'You are not in this club.' });
+  }
+  if (role === 'owner') {
+    return res.status(400).json({ error: "The owner can't leave their own club." });
+  }
+
+  await clubModel.leaveClub(req.userId, id);
+  res.json({ message: 'You left the club.' });
+}
+
+// GET /api/me/clubs  (CH3: ids of the clubs I'm in, needs a login token)
+async function myClubs(req, res) {
+  const clubIds = await clubModel.listMyClubIds(req.userId);
+  res.json({ clubIds });
+}
+
+module.exports = { create, list, get, join, leave, myClubs };
