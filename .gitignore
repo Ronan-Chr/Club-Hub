@@ -1,11 +1,25 @@
-# Dependencies
+# Dependencies (root and client)
 node_modules/
 
-# Secrets (never commit the real .env)
+# Secrets: never commit real .env files, but keep the example
 .env
+.env.*
+!.env.example
 
 # Build output
 dist/
+build/
+
+# Logs and test coverage
+*.log
+npm-debug.log*
+coverage/
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
 
 # Local backup file
 *.bundle
