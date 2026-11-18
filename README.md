@@ -105,28 +105,28 @@ The tests in `server/tests/` use Jest + Supertest. They cover both success and f
 ### Club Directory
 
 The home page lists every club with a search bar. Clubs you've joined are marked.
-![Club directory](SCREENSHOT_PLACEHOLDER)
+![Club directory](docs/screenshots/directory.png)
 
 ### Sign Up / Log In
 
 Create an account or log in. Wrong info or a duplicate email shows an error.
-![Sign up](SCREENSHOT_PLACEHOLDER)
-![Login error](SCREENSHOT_PLACEHOLDER)
+![Sign up](docs/screenshots/signup.png)
+![Login error](docs/screenshots/login-error.png)
 
 ### Club Page
 
 Shows the club's description and member list with the Join / Leave button.
-![Club page](SCREENSHOT_PLACEHOLDER)
+![Club page](docs/screenshots/club-page.png)
 
 ### Create a Club
 
 Enter a name and description, and you become the club owner.
-![Create club](SCREENSHOT_PLACEHOLDER)
+![Create club](docs/screenshots/create-club.png)
 
 ### Mobile
 
 The main focus is to have a set view for the Webpage view on Desktop and then modify the front-end to work well with mobile phones.
-![Mobile view](SCREENSHOT_PLACEHOLDER)
+![Mobile view](docs/screenshots/mobile.png)
 
 ## Troubleshooting
 
