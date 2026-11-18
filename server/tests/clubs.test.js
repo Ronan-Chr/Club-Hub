@@ -1,4 +1,4 @@
-// CH4 tests: creating a club (success and failure cases).
+// CH2 and CH4 tests: listing clubs, opening a club page and creating a club.
 // The club model is replaced with a fake, so the tests never touch the real database.
 process.env.JWT_SECRET = 'test-secret';
 
@@ -14,6 +14,7 @@ const token = jwt.sign({ userId: 1 }, 'test-secret');
 
 let clubs;
 beforeEach(() => {
+  jest.clearAllMocks(); // forget calls from earlier tests
   clubs = [];
   clubModel.createClubWithOwner.mockImplementation(async (name, description, ownerId) => {
     if (clubs.some((c) => c.name === name)) {
@@ -52,5 +53,41 @@ describe('POST /api/clubs', () => {
     const res = await request(app).post('/api/clubs').set('Authorization', `Bearer ${token}`).send(newClub);
     expect(res.status).toBe(409);
     expect(res.body.error).toMatch(/already exists/);
+  });
+});
+
+// CH2: club directory and club page
+const chess = { id: 1, name: 'Chess Club', description: 'Weekly games for every skill level.' };
+
+describe('GET /api/clubs', () => {
+  test('lists every club with its member count, no login needed', async () => {
+    clubModel.listClubs.mockResolvedValue([{ ...chess, member_count: 2 }]);
+    const res = await request(app).get('/api/clubs');
+    expect(res.status).toBe(200);
+    expect(res.body.clubs).toHaveLength(1);
+    expect(res.body.clubs[0].member_count).toBe(2);
+  });
+});
+
+describe('GET /api/clubs/:id', () => {
+  test('shows the club description and member list', async () => {
+    clubModel.getClub.mockResolvedValue({ ...chess, members: [{ id: 1, name: 'Ronan', role: 'owner' }] });
+    const res = await request(app).get('/api/clubs/1');
+    expect(res.status).toBe(200);
+    expect(res.body.club.description).toBe(chess.description);
+    expect(res.body.club.members[0].role).toBe('owner');
+  });
+
+  test('returns 404 for a club that does not exist', async () => {
+    clubModel.getClub.mockResolvedValue(undefined);
+    const res = await request(app).get('/api/clubs/999');
+    expect(res.status).toBe(404);
+    expect(res.body.error).toBe('Club not found.');
+  });
+
+  test('returns 400 for an id that is not a number', async () => {
+    const res = await request(app).get('/api/clubs/abc');
+    expect(res.status).toBe(400);
+    expect(clubModel.getClub).not.toHaveBeenCalled();
   });
 });
