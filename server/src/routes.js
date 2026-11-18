@@ -14,7 +14,9 @@ router.post('/auth/signup', wrap(authController.signup));
 router.post('/auth/login', wrap(authController.login));
 router.get('/auth/me', requireAuth, wrap(authController.me));
 
-// CH4: clubs
+// CH2 and CH4: clubs
+router.get('/clubs', wrap(clubController.list));
+router.get('/clubs/:id', wrap(clubController.get));
 router.post('/clubs', requireAuth, wrap(clubController.create));
 
 module.exports = router;
